@@ -12,11 +12,21 @@ module DroneApi
     end
   end
 
+  class AuthError < DroneApi::Error
+    def message
+      'Invalid auth token'
+    end
+  end
+
   class << self
     attr_accessor :configuration
 
     def configure &blk
       self.configuration ||= DroneApi::Configuration.new.tap(&blk)
+    end
+
+    def generate_token
+      DroneApi::Auth.new.response
     end
   end
 
@@ -46,7 +56,10 @@ module DroneApi
     end
 
     def set_auth_header(request)
-      request["Authorization"] = @access_token if @access_token
+      if requires_authentication?
+        DroneApi.generate_token if DroneApi.configuration.current_token.empty?
+        request["Auth-Token"] = DroneApi.configuration.current_token
+      end
     end
 
     def is_form_request?
@@ -120,9 +133,17 @@ module DroneApi
       end
     end
 
+    #NOTE: raise configuration error if token is invalid
+    ##Token is stored in DroneApi.configuration.current_token which can expire
+    ##So once its expire we'll rase authication error to let application handle it
+    ##Refresh token using DroneApi.generate_token if this error is raised
+
     def process_request http, request
       response = http.request(request)
       @response_status = response.code.to_i
+
+      raise DroneApi::ConfigurationError if @response_status == 401
+
       process_response(response.body) if response.body 
     end
 
@@ -156,6 +177,10 @@ module DroneApi
       end
     end
 
+    def requires_authentication?
+      true
+    end
+
     private 
 
     def payload
@@ -169,3 +194,4 @@ module DroneApi
 end
 
 require 'drone_api/auth'
+require 'drone_api/accounts'

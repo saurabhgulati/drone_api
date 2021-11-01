@@ -29,4 +29,8 @@ class DroneApi::Auth < DroneApi::Base
       client_secret: @client_secret
     }
   end
+
+  def requires_authentication?
+    false
+  end
 end
