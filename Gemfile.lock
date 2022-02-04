@@ -6,6 +6,7 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
+    byebug (10.0.2)
     diff-lcs (1.4.4)
     json (2.6.1)
     jwt (2.3.0)
@@ -28,6 +29,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  byebug
   drone_api!
   json
   jwt

@@ -22,7 +22,26 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+# Invoke Auth
+DroneApi.generate_token
+
+# Account Show
+DroneApi::Accounts::Show.new.response
+
+# Account Create
+DroneApi::Accounts::Create.new(name: "Account Name", email: "test@email.com", first_name: "Account First Name", last_name: "Account Last Name").response
+
+# Client Show
+DroneApi::Clients::Show.new(1).response
+
+# Client Create
+DroneApi::Clients::Create.new(email: "test@email.com", first_name: "Client First Name", last_name: "Client Last Name", organization: "Org Name", original_client_id: 1122).response
+
+# Building Show
+DroneApi::Buildings::Show.new(1).response
+
+# Bulding Create
+DroneApi::Buildings::Create.new(name: "Building Name", address: "Address", city: "<City>", state: "<State>", zipcode: <Zip>, country: "<Country>", latitude: 123.234, longitude: 764.345, client_id: 1, original_building_id: 234).response
 
 ## Development
 
@@ -42,3 +61,12 @@ The gem is available as open source under the terms of the [MIT License](https:/
 ## Code of Conduct
 
 Everyone interacting in the DroneApi project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/[USERNAME]/drone_api/blob/master/CODE_OF_CONDUCT.md).
+
+# Add to initializers drone_api.rb
+
+DroneApi.configure do |config|
+  config.client_id = '<username in drone>'
+  config.client_secret = '<password recieved from drone>'
+  config.account_id = '<account_id from drone>'
+  config.env = '<env>'
+end

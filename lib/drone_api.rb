@@ -25,19 +25,20 @@ module DroneApi
       self.configuration ||= DroneApi::Configuration.new.tap(&blk)
     end
 
-    def generate_token
-      DroneApi::Auth.new.response
+    def generate_token payload={ username: DroneApi.configuration&.client_id }
+      DroneApi::Auth.new(payload).response
     end
   end
 
   class Configuration
-    attr_accessor :client_secret, :client_id, :account_id, :env, :current_token
+    attr_accessor :client_secret, :client_id, :account_id, :env, :current_token, :encryption_token
     
     def initialize(options={})
       self.client_secret = options['client_secret']
       self.client_id = options['client_id']
       self.account_id = options['account_id']
       self.env = options['env'] || 'production'
+      self.encryption_token = options['encryption_token']
     end
   end
 
@@ -45,7 +46,7 @@ module DroneApi
     attr_reader :response_data, :response_status, :client_secret, :client_id, :account_id
 
     def initialize
-      @client_secret  = DroneApi.configuration&.client_secret
+      @client_secret = DroneApi.configuration&.client_secret
       @client_id = DroneApi.configuration&.client_id
       @account_id = DroneApi.configuration&.account_id
       @drone_env = DroneApi.configuration&.env
@@ -92,8 +93,8 @@ module DroneApi
       url = URI(url)
       url.query = URI.encode_www_form(query_params) if query_params.any?
       http = Net::HTTP.new(url.host, url.port)
-      http.use_ssl = true
-      http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+      # http.use_ssl = true
+      # http.verify_mode = OpenSSL::SSL::VERIFY_NONE
       case request_type 
       when 'GET'
         request = Net::HTTP::Get.new(url)
@@ -142,7 +143,7 @@ module DroneApi
       response = http.request(request)
       @response_status = response.code.to_i
 
-      raise DroneApi::ConfigurationError if @response_status == 401
+      raise DroneApi::AuthError if @response_status == 401
 
       process_response(response.body) if response.body 
     end
@@ -168,9 +169,9 @@ module DroneApi
     end
 
     def env_url
-      if @env == 'production'
-        return 'https://drone.ccubeapp.com'
-      elsif @env == 'staging'
+      if @drone_env == 'production'
+        return 'http://192.168.33.10:81'
+      elsif @drone_env == 'staging'
         return 'https://drone.stg.ccubeapp.com'
       else
         return 'http://localhost:3001'
@@ -195,3 +196,5 @@ end
 
 require 'drone_api/auth'
 require 'drone_api/accounts'
+require 'drone_api/clients'
+require 'drone_api/buildings'

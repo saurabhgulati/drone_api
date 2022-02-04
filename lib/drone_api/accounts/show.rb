@@ -1,5 +1,9 @@
 class DroneApi::Accounts::Show < DroneApi::Base
 
+  def process_response response
+    @response_data = JSON.parse(response)
+  end
+
   private
 
   def api_path
