@@ -27,11 +27,11 @@ class DroneApi::Buildings::Create < DroneApi::Base
 
   def validate
     @errors['name']      << 'Can\'t be blank' if @params.name.empty?
-    @errors['address']   << 'Can\'t be blank' if @params.address.empty?
-    @errors['city']      << 'Can\'t be blank' if @params.city.empty?
-    @errors['state'].    << 'Can\'t be blank' if @params.state.empty?
+    @errors['address']   << 'Can\'t be blank' if @params.address.to_s.empty?
+    @errors['city']      << 'Can\'t be blank' if @params.city.to_s.empty?
+    @errors['state'].    << 'Can\'t be blank' if @params.state.to_s.empty?
     @errors['zipcode']   << 'Can\'t be blank' if @params.zipcode.to_s.empty?
-    @errors['country']   << 'Can\'t be blank' if @params.country.empty?
+    @errors['country']   << 'Can\'t be blank' if @params.country.to_s.empty?
     @errors['latitude']  << 'Can\'t be blank' if @params.latitude.to_s.empty?
     @errors['longitude'] << 'Can\'t be blank' if @params.longitude.to_s.empty?
     @errors['client_id'] << 'Can\'t be blank' if @params.client_id.to_s.empty?

@@ -58,7 +58,7 @@ module DroneApi
 
     def set_auth_header(request)
       if requires_authentication?
-        DroneApi.generate_token if DroneApi.configuration.current_token.empty?
+        DroneApi.generate_token if DroneApi.configuration.current_token.to_s.empty?
         request["Auth-Token"] = DroneApi.configuration.current_token
       end
     end

@@ -21,10 +21,10 @@ class DroneApi::Clients::Create < DroneApi::Base
   private
 
   def validate
-    @errors['email'] << 'Can\'t be blank' if @params.email.empty?
-    @errors['first_name'] << 'Can\'t be blank' if @params.first_name.empty?
-    @errors['last_name'] << 'Can\'t be blank' if @params.last_name.empty?
-    @errors['organization'] << 'Can\'t be blank' if @params.organization.empty?
+    @errors['email'] << 'Can\'t be blank' if @params.email.to_s.empty?
+    @errors['first_name'] << 'Can\'t be blank' if @params.first_name.to_s.empty?
+    @errors['last_name'] << 'Can\'t be blank' if @params.last_name.to_s.empty?
+    @errors['organization'] << 'Can\'t be blank' if @params.organization.to_s.empty?
     @errors['original_client_id'] << 'Can\'t be blank' if @params.original_client_id.to_s.empty?
   end
 
