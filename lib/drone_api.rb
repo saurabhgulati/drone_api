@@ -172,7 +172,7 @@ module DroneApi
       if @drone_env == 'production'
         return 'http://192.168.33.10:81'
       elsif @drone_env == 'staging'
-        return 'https://drone.stg.ccubeapp.com'
+        return 'http://drone.stg.ccubeapp.com'
       else
         return 'http://localhost:3001'
       end
